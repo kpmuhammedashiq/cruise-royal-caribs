@@ -7,7 +7,7 @@ import java.net.Socket;
 public class Ship {
     private static final int SHIP_PORT = 8080;
     private static final int OFFSHORE_PORT = 8082;
-    private static final String OFFSHORE_ADDRESS = "localhost";
+    private static final String OFFSHORE_ADDRESS = "offshore-server";
 
     public static void main(String[] args) throws IOException {
         Socket offshoreSocket = new Socket(OFFSHORE_ADDRESS, OFFSHORE_PORT);
