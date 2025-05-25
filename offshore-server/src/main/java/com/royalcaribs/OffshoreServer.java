@@ -14,10 +14,12 @@ import java.nio.charset.StandardCharsets;
 
 
 public class OffshoreServer {
+    private static final int OFFSHORE_PORT = 8082;
+
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(8082);
-        System.out.println("Offshore Server - up and running:"+8082);
-        Socket clientSocket = serverSocket.accept();
+        ServerSocket offshoreSocket = new ServerSocket(OFFSHORE_PORT);
+        System.out.println("Offshore Server - up and running:"+offshoreSocket.toString());
+        Socket clientSocket = offshoreSocket.accept();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
         while (true) {
@@ -41,12 +43,15 @@ public class OffshoreServer {
                     .method(method, requestBody)
                     .build();
             Response rpExternal = client.newCall(rqExternal).execute();
-            String rpExternalData = rpExternal.body().string();
-//            System.out.println(rpExternalData);
+            byte[] bodyBytes = rpExternal.body().bytes();
+
             bufferedWriter.write("HTTP/1.1 200 OK\r\n");
-            bufferedWriter.write("Content-Type: text/plain\r\n\r\n");
-            bufferedWriter.write(rpExternalData);
+            bufferedWriter.write("Content-Type: text/plain\r\n");
+            bufferedWriter.write("Content-Length: " + bodyBytes.length + "\r\n");
+            bufferedWriter.write("\r\n");
             bufferedWriter.flush();
+            clientSocket.getOutputStream().write(bodyBytes);
+            clientSocket.getOutputStream().flush();
         }
 
     }
