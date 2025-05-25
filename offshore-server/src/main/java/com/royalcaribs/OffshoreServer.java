@@ -1,17 +1,32 @@
 package com.royalcaribs;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class OffshoreServer {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+
+public class OffshoreServer {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(8082);
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("Offshore Server - up and running:"+8082);
+
+        BufferedReader bRead = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
+            while (true) {
+                String data;
+                StringBuilder request = new StringBuilder();
+                while ((data = bRead.readLine()) != null  && !data.isEmpty()) {
+                    request.append(data).append("\r\n");
+                }
+
+                System.out.println("Received request:" + request);
+
+//                clientSocket.close();
+//                serverSocket.close();
+            }
+
     }
 }
