@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offshore-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: offshore-server
+  template:
+    metadata:
+      labels:
+        app: offshore-server
+    spec:
+      containers:
+        - name: offshore-server
+          image: kpmuhammedashiq/offshore-server:latest
+          ports:
+            - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: offshore-server
+spec:
+  selector:
+    app: offshore-server
+  ports:
+    - port: 8082
+      targetPort: 8082
+  clusterIP: None  # So DNS name remains stable for Ship
