@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ship
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ship
+  template:
+    metadata:
+      labels:
+        app: ship
+    spec:
+      containers:
+        - name: ship
+          image: kpmuhammedashiq/ship:latest
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ship
+spec:
+  selector:
+    app: ship
+  type: NodePort  # or LoadBalancer if using cloud
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
